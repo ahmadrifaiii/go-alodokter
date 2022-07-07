@@ -1,0 +1,25 @@
+version: "3.1"
+
+services:
+  core-alodokter:
+    build:
+      context: ./.
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    ports:
+      - 8015:8015
+
+    environment:
+      - APP_ENV=DEVELOPMENT
+      - DEBUG=true
+      - HTTP_PORT=8080
+      - DB_HOST_MYSQL=127.0.0.1
+      - DB_PORT_MYSQL=3306
+      - DB_USER_MYSQL=password
+      - DB_PASSWORD_MYSQL=password
+      - DB_NAME_MYSQL=go_lemonilo_db
+      - REDIS_HOST=127.0.0.1
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - DB_MAX_IDLE_CONN=10
+      - DB_MAX_OPEN_CONN=10

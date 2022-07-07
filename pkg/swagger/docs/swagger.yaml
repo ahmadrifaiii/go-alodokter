@@ -1,0 +1,142 @@
+definitions:
+  model.LoginPayload:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  model.Response:
+    properties:
+      data:
+        type: object
+      error:
+        type: object
+      log_id:
+        type: string
+      message:
+        type: object
+      status:
+        type: integer
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: get the status of server.
+      parameters:
+      - description: model.LoginPayload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginPayload'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: User Administrator Login
+      tags:
+      - Admin - Login
+  /api/v1/user/delete/{param}:
+    delete:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      parameters:
+      - description: User Id
+        in: path
+        name: param
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: interface
+      summary: Delete the User
+      tags:
+      - Identity Access Management - User
+  /api/v1/user/detail/{param}:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      parameters:
+      - description: User Id
+        in: path
+        name: param
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: interface
+      summary: Detail of User
+      tags:
+      - Identity Access Management - User
+  /api/v1/user/list:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: interface
+      summary: Get List User
+      tags:
+      - Identity Access Management - User
+  /api/v1/user/register:
+    post:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: interface
+      summary: Register User
+      tags:
+      - Identity Access Management - User
+  /api/v1/user/update/{param}:
+    put:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      parameters:
+      - description: User Id
+        in: path
+        name: param
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: interface
+      summary: Update User
+      tags:
+      - Identity Access Management - User
+swagger: "2.0"

@@ -1,0 +1,7 @@
+__debug_bin
+vendor
+.vscode
+.idea
+
+go.mod
+go.sum
