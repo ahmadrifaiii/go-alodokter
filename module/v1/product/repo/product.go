@@ -10,21 +10,20 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-// get user list
-func GetUserList(sqlx *sqlx.DB) (users []model.User, err error) {
-	users = make([]model.User, 0)
-	var ModelUser model.User
+// get product list
+func GetProductList(sqlx *sqlx.DB) (resp []model.Product, err error) {
+	var Model model.Product
 
 	// sql builder
-	st := sqlbuilder.NewStruct(ModelUser)
-	sb := st.SelectFrom(model.TabelUser)
+	st := sqlbuilder.NewStruct(Model)
+	sb := st.SelectFrom(model.TabelProduct)
 
 	sqlStatement, args := sb.Build()
 
 	stmt, err := sqlx.Prepare(sqlStatement)
 
 	if err != nil {
-		return users, err
+		return nil, err
 	}
 
 	rows, err := stmt.Query(args...)
@@ -32,26 +31,26 @@ func GetUserList(sqlx *sqlx.DB) (users []model.User, err error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Error(err)
-			return users, err
+			return nil, err
 		}
-		return users, err
+		return nil, err
 	}
 
 	for rows.Next() {
-		var usr model.User
-		if err := rows.Scan(st.Addr(&usr)...); err != nil {
+		var py model.Product
+		if err := rows.Scan(st.Addr(&py)...); err != nil {
 			log.Error(err)
 			continue
 		}
 
-		users = append(users, usr)
+		resp = append(resp, py)
 	}
 
 	return
 }
 
 // get user detail
-func GetUserDetail(sqlx *sqlx.DB, userId string) (user model.User, err error) {
+func GetUserDetail(sqlx *sqlx.DB, userId int) (user model.User, err error) {
 	var ModelUser model.User
 
 	// sql builder
@@ -84,10 +83,10 @@ func GetUserDetail(sqlx *sqlx.DB, userId string) (user model.User, err error) {
 	return
 }
 
-// register user
-func RegisterUser(tx *sql.Tx, p *model.UserPayload) (result sql.Result, err error) {
-	st := sqlbuilder.NewStruct(model.UserPayload{})
-	sb := st.InsertIntoForTag(model.TabelUser, "insert", *p)
+// crate new product
+func CreateNewProduct(tx *sql.Tx, p *model.Product) (result sql.Result, err error) {
+	st := sqlbuilder.NewStruct(model.Product{})
+	sb := st.InsertIntoForTag(model.TabelProduct, "insert", *p)
 
 	sqlStatement, args := sb.Build()
 

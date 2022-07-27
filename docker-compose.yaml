@@ -1,5 +1,4 @@
 version: "3.1"
-
 services:
   core-alodokter:
     build:
@@ -15,11 +14,26 @@ services:
       - HTTP_PORT=8080
       - DB_HOST_MYSQL=127.0.0.1
       - DB_PORT_MYSQL=3306
-      - DB_USER_MYSQL=password
-      - DB_PASSWORD_MYSQL=password
-      - DB_NAME_MYSQL=go_lemonilo_db
-      - REDIS_HOST=127.0.0.1
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=
+      - DB_USER_MYSQL=root
+      - DB_PASSWORD_MYSQL=mauFJcuf5dhRMQrjj
+      - DB_NAME_MYSQL=alodokterdb
       - DB_MAX_IDLE_CONN=10
       - DB_MAX_OPEN_CONN=10
+
+  db-alodokter:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=alodokterdb
+      - MYSQL_ROOT_PASSWORD=mauFJcuf5dhRMQrjj
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db:
+    driver: local

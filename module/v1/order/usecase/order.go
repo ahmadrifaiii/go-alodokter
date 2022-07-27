@@ -4,52 +4,21 @@ import (
 	"errors"
 	"go-alodokter/config"
 	"go-alodokter/model"
-	"go-alodokter/module/v1/user/repo"
+	"go-alodokter/module/v1/order/repo"
 	"go-alodokter/utl/password"
 	"strings"
 	"time"
 )
 
-func UserList(conf config.Configuration) (users []model.User, err error) {
+func OrderList(conf config.Configuration) (users []model.User, err error) {
 	db := conf.MysqlDB
-	return repo.GetUserList(db)
+	return repo.GetOrderList(db)
 }
 
-// get user detail
-func UserDetail(conf config.Configuration, userId string) (result *model.UserDetail, err error) {
+// get order detail
+func UserDetail(conf config.Configuration, userId int) (users model.User, err error) {
 	db := conf.MysqlDB
-	getuser, err := repo.GetUserDetail(db, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	getroles, err := repo.GetUserRoleMaps(db, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	roleIds := make([]string, 0)
-	for _, role := range *getroles {
-		roleIds = append(roleIds, role.RoleId)
-	}
-
-	getaccess, err := repo.GetUserRoleAccess(db, roleIds)
-	if err != nil {
-		return nil, err
-	}
-
-	gAccess := make([]model.UserRoleAccess, 0)
-	for _, access := range *getaccess {
-		if access.IsAccess {
-			gAccess = append(gAccess, access)
-		}
-	}
-
-	return &model.UserDetail{
-		User:   getuser,
-		Roles:  getroles,
-		Access: &gAccess,
-	}, nil
+	return repo.GetUserDetail(db, userId)
 }
 
 // register new user

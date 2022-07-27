@@ -11,7 +11,7 @@ import (
 )
 
 // get user list
-func GetUserList(sqlx *sqlx.DB) (users []model.User, err error) {
+func GetOrderList(sqlx *sqlx.DB) (users []model.User, err error) {
 	users = make([]model.User, 0)
 	var ModelUser model.User
 
@@ -51,7 +51,7 @@ func GetUserList(sqlx *sqlx.DB) (users []model.User, err error) {
 }
 
 // get user detail
-func GetUserDetail(sqlx *sqlx.DB, userId string) (user model.User, err error) {
+func GetUserDetail(sqlx *sqlx.DB, userId int) (user model.User, err error) {
 	var ModelUser model.User
 
 	// sql builder

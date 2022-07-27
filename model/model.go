@@ -35,3 +35,7 @@ type TableAttributes struct {
 	UpdatedAt string `json:"updated_at,omitempty" db:"updated_at"`
 	UpdatedBy string `json:"updated_by,omitempty" db:"updated_by" fieldtag:"insert,update"`
 }
+
+type IsSuccess struct {
+	IsSuccess bool `json:"is_success"`
+}

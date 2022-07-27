@@ -8,6 +8,7 @@ import (
 	glJwt "go-alodokter/utl/jwt"
 	"go-alodokter/utl/response"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -28,6 +29,7 @@ func InitAuthMiddleware(conf config.Configuration) *Handle {
 // BearerClaims data structure for claims
 type BearerClaims struct {
 	Email    string    `json:"email"`
+	Access   []string  `json:"access"`
 	Hostname string    `json:"hostname"`
 	Exp      int64     `json:"exp"`
 	Iat      time.Time `json:"iat"`
@@ -96,6 +98,25 @@ func (h *Handle) BearerVerify() echo.MiddlewareFunc {
 
 				c.Set("token", tkn.Raw)
 				c.Set("email", claims.Email)
+
+				uri := c.Request().URL.String()
+				tmp := 0
+				for _, ac := range claims.Access {
+					ismatch, _ := regexp.MatchString(ac, uri)
+					if ismatch {
+						return next(c)
+					}
+					tmp = tmp + 1
+					if tmp == len(claims.Access) {
+						return response.Error(c, model.Response{
+							LogId:   c.Get("request_id").(string),
+							Status:  http.StatusForbidden,
+							Message: nil,
+							Data:    nil,
+							Error:   "invalid access",
+						})
+					}
+				}
 
 				return next(c)
 

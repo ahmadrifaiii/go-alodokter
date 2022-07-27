@@ -1,36 +1,36 @@
-package user
+package order
 
 import (
 	"go-alodokter/model"
-	"go-alodokter/module/v1/user/usecase"
+	"go-alodokter/module/v1/order/usecase"
 	"go-alodokter/utl/response"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 func (m *Module) HandleRest(group *echo.Group) {
-	group.GET("/list", m.userList).Name = "user-list"
-	group.GET("/detail/:param", m.userDetail).Name = "user-detail"
-	group.POST("/register", m.userRegister).Name = "user-register"
-	group.PUT("/update/:param", m.userUpdate).Name = "user-update"
-	group.DELETE("/delete/:param", m.userDelete).Name = "user-delete"
+	group.GET("/list", m.orderList).Name = "order-list"
+	group.GET("/detail/:param", m.orderDetail).Name = "order-detail"
+	group.POST("/register", m.createOrder).Name = "order-register"
+	group.PUT("/update/:param", m.updateOrder).Name = "order-update"
+	group.DELETE("/delete/:param", m.deleteOrder).Name = "order-delete"
 }
 
-// @Summary Get List User
+// @Summary Get List Order
 // @Description get the status of server.
-// @Tags Identity Access Management - User
+// @Tags Order Management System - Order
 // @Accept */*
 // @Produce json
 // @Success 200 {interface} model.Response{}
-// @Router /api/v1/user/list [get]
-func (m *Module) userList(c echo.Context) error {
+// @Router /api/v1/order/list [get]
+func (m *Module) orderList(c echo.Context) error {
 	var (
 		requestId = c.Get("request_id").(string)
 	)
 
-	// usecase get user list
-	resp, err := usecase.UserList(m.Config)
+	resp, err := usecase.OrderList(m.Config)
 	if err != nil {
 		return response.Error(c, model.Response{
 			LogId:   requestId,
@@ -48,14 +48,14 @@ func (m *Module) userList(c echo.Context) error {
 	})
 }
 
-// @Summary Register User
+// @Summary Create Order
 // @Description get the status of server.
-// @Tags Identity Access Management - User
+// @Tags Order Management System - Order
 // @Accept */*
 // @Produce json
 // @Success 200 {interface} model.Response{}
-// @Router /api/v1/user/register [post]
-func (m *Module) userRegister(c echo.Context) error {
+// @Router /api/v1/order/create [post]
+func (m *Module) createOrder(c echo.Context) error {
 
 	var (
 		requestId = c.Get("request_id").(string)
@@ -96,13 +96,13 @@ func (m *Module) userRegister(c echo.Context) error {
 
 // @Summary Update User
 // @Description get the status of server.
-// @Tags Identity Access Management - User
+// @Tags Order Management System - Order
 // @Accept */*
 // @Produce json
 // @Param param path int true "User Id"
 // @Success 200 {interface} model.Response{}
-// @Router /api/v1/user/update/{param} [put]
-func (m *Module) userUpdate(c echo.Context) error {
+// @Router /api/v1/order/update/{param} [put]
+func (m *Module) updateOrder(c echo.Context) error {
 	var (
 		requestId = c.Get("request_id").(string)
 		usr       = model.User{}
@@ -141,13 +141,13 @@ func (m *Module) userUpdate(c echo.Context) error {
 
 // @Summary Delete the User
 // @Description get the status of server.
-// @Tags Identity Access Management - User
+// @Tags Order Management System - Order
 // @Accept */*
 // @Produce json
-// @Param param path int true "User Id"
+// @Param param path string true "order id"
 // @Success 200 {interface} model.Response{}
-// @Router /api/v1/user/delete/{param} [delete]
-func (m *Module) userDelete(c echo.Context) error {
+// @Router /api/v1/order/delete/{param} [delete]
+func (m *Module) deleteOrder(c echo.Context) error {
 	var (
 		requestId = c.Get("request_id").(string)
 		usr       = model.User{}
@@ -186,18 +186,18 @@ func (m *Module) userDelete(c echo.Context) error {
 
 // @Summary Detail of User
 // @Description get the status of server.
-// @Tags Identity Access Management - User
+// @Tags Order Management System - Order
 // @Accept */*
 // @Produce json
 // @Param param path int true "User Id"
 // @Success 200 {interface} model.Response{}
-// @Router /api/v1/user/detail/{param} [get]
-func (m *Module) userDetail(c echo.Context) error {
+// @Router /api/v1/order/detail/{param} [get]
+func (m *Module) orderDetail(c echo.Context) error {
 	var (
 		requestId = c.Get("request_id").(string)
 	)
-
-	resp, err := usecase.UserDetail(m.Config, c.Param("param"))
+	id, _ := strconv.Atoi(c.Param("param"))
+	resp, err := usecase.UserDetail(m.Config, id)
 	if err != nil {
 		return response.Error(c, model.Response{
 			LogId:   requestId,

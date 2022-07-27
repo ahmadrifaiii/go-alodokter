@@ -2,10 +2,12 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"go-alodokter/config/env"
 	"go-alodokter/utl/middleware/logging"
 	"go-alodokter/utl/middleware/secure"
+	"io/ioutil"
 	"net/http"
 
 	"os"
@@ -48,7 +50,19 @@ func (s *Service) HTTPServerMain() *echo.Echo {
 	ModuleUser := adm.Group("/user", s.MiddlewareAuth.BearerVerify())
 	s.UserModule.HandleRest(ModuleUser)
 
+	// domain module order
+	ModuleOrder := adm.Group("/order", s.MiddlewareAuth.BearerVerify())
+	s.OrderModule.HandleRest(ModuleOrder)
+
+	// domain module product
+	ProductModule := adm.Group("/product", s.MiddlewareAuth.BearerVerify())
+	s.ProductModule.HandleRest(ProductModule)
+
 	e.GET("/docs/*", echoSwagger.WrapHandler)
+
+	data, _ := json.MarshalIndent(e.Routes(), "", "  ")
+
+	ioutil.WriteFile("routes.json", data, 0644)
 
 	return e
 }

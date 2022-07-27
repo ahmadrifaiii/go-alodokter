@@ -1,12 +1,15 @@
 package env
 
-import "github.com/caarlos0/env/v6"
+import (
+	"os"
+
+	"github.com/golobby/dotenv"
+)
 
 type ConfigurationEnvironment struct {
 	ApplicationEnvironment
 	DatabaseEnvironment
 	AuthEnvironment
-	RedisEnvironment
 }
 
 type ApplicationEnvironment struct {
@@ -24,12 +27,6 @@ type DatabaseEnvironment struct {
 	DBPort      string `env:"DB_PORT_MYSQL"`
 }
 
-type RedisEnvironment struct {
-	RedisHost     string `env:"REDIS_HOST" envDefault:"0.0.0.0"`
-	RedisPort     string `env:"REDIS_PORT" envDefault:"6379"`
-	RedisPassword string `env:"REDIS_PASSWORD"`
-}
-
 type AuthEnvironment struct {
 	TokenAge string `env:"TOKEN_AGE" envDefault:"24h30m"`
 }
@@ -37,7 +34,13 @@ type AuthEnvironment struct {
 var Conf = ConfigurationEnvironment{}
 
 func LoadEnv() {
-	if err := env.Parse(&Conf); err != nil {
+	file, err := os.Open("system.env")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	err = dotenv.NewDecoder(file).Decode(&Conf)
+	if err != nil {
 		panic(err.Error())
 	}
 }

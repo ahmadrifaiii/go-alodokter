@@ -43,7 +43,7 @@ func (m *Module) login(c echo.Context) error {
 		return response.Error(c, model.Response{
 			LogId:   requestId,
 			Status:  http.StatusBadRequest,
-			Message: nil,
+			Message: err.Error(),
 			Data:    nil,
 			Error:   err,
 		})

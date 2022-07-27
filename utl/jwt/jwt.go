@@ -13,6 +13,7 @@ var Key = "tS9ybXMcXKSNDYt7d63BA3F4Y9cJ5wTBJusCbc"
 
 type BearerClaims struct {
 	Email    string    `json:"email"`
+	Access   []string  `json:"access"`
 	Hostname string    `json:"hostname"`
 	Exp      int64     `json:"exp"`
 	Iat      time.Time `json:"iat"`
@@ -20,7 +21,7 @@ type BearerClaims struct {
 }
 
 //  generate jwt
-func Generate(email string) (token model.AuthAccess, err error) {
+func Generate(email string, access []string) (token model.AuthAccess, err error) {
 	now := time.Now().Add(-90 * time.Second)
 	age := now.Add(time.Hour * 8)
 	ageString := age.Format("2006-01-02 15:04:05")
@@ -34,6 +35,7 @@ func Generate(email string) (token model.AuthAccess, err error) {
 	claim["exp"] = age.Unix()
 	claim["iat"] = now
 	claim["hostname"] = hostname
+	claim["access"] = access
 
 	sign := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), claim)
 
